@@ -5,7 +5,7 @@ import sys
 from scipy.stats import pearsonr
   
 pid = str(sys.argv[1])
-f = open("bake_write_num_entrants_"+pid+"_0","r")
+f = open("sdskv_putpacked_num_entrants_"+pid+"_4","r")
 contents = f.readlines()
 
 raw_values = []
@@ -19,7 +19,9 @@ for line in range(1, len(contents)):
 #print ('Sum is ', sum(raw_values1))
 
 fig, ax = plt.subplots(figsize =(10, 7))
-ax.plot(np.array(raw_times), np.array(raw_values), drawstyle='steps') 
+ax.plot(np.array(raw_times), np.array(raw_values), drawstyle='steps')
+ax.set_xlabel("Time")
+ax.set_ylabel("Num Entrants")
 # Show plot 
 plt.show() 
 
