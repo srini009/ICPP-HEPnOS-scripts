@@ -5,19 +5,30 @@ import sys
 from scipy.stats import pearsonr
 import pandas
 from sklearn import linear_model
-  
+import glob, re
+
+data_directory = "/home/srinivasan/Documents/MOCHI/hist/theta_medium_sdskv_benchmarks"
+
+def populate_pidlist():
+	files = glob.glob(str(data_directory)+"/*") #Read all files in data_directory
+	pidset = set()
+	for f in files:
+		temp = re.findall(r'\d+', f)
+		pidset.add(temp[0])
+	pidlist = list(pidset)
+	return pidlist
+
 def multiple_linear_regr_model():
 	raw_sizes = []
 	raw_batch_sizes = []
 	raw_latencies = []
+	
+	pidlist = populate_pidlist()
 
-	#pidlist = ["21961", "224447", "47672", "85796", "131274", "155593", "82482"]
-	pidlist = ["141162"]
-	data_directory = "/home/srinivasan/Documents/MOCHI/hist/theta_sdskv_benchmarks/"
 	for pid in pidlist:
-		sdskv_putpacked_size = open(data_directory + "sdskv_putpacked_data_size_"+pid+"_0","r")
-		sdskv_putpacked_batch_size = open(data_directory + "sdskv_putpacked_batch_size_"+pid+"_0","r")
-		sdskv_putpacked_latency = open(data_directory + "sdskv_putpacked_latency_"+pid+"_0","r")
+		sdskv_putpacked_size = open(data_directory + "/sdskv_putpacked_data_size_"+pid+"_4","r")
+		sdskv_putpacked_batch_size = open(data_directory + "/sdskv_putpacked_batch_size_"+pid+"_4","r")
+		sdskv_putpacked_latency = open(data_directory + "/sdskv_putpacked_latency_"+pid+"_4","r")
 		contents1 = sdskv_putpacked_size.readlines()
 		contents2 = sdskv_putpacked_latency.readlines()
 		contents3 = sdskv_putpacked_batch_size.readlines()
@@ -41,22 +52,19 @@ def multiple_linear_regr_model():
 	y = df['Latency']
 	regr = linear_model.LinearRegression()
 	regr.fit(X, y)
-	print (regr.coef_)
 	return regr
 
 def linear_regr_model():
-	#pidlist = ["21961", "224447", "47672", "85796", "131274", "155593", "82482", "141162"]
-	pidlist = ["217016", "21961"] #Turns out that this is good enough
-	#pidlist = ["124028", "201616", "127800", "128120", "214417"]
+	pidlist = populate_pidlist()
+	print (pidlist)
 	raw_sizes = []
 	raw_batch_sizes = []
 	raw_latencies = []
 
-	data_directory = "/home/srinivasan/Documents/MOCHI/hist/theta_sdskv_benchmarks/"
 	for pid in pidlist:
-		sdskv_putpacked_size = open(data_directory + "sdskv_putpacked_data_size_"+pid+"_0","r")
-		sdskv_putpacked_batch_size = open(data_directory + "sdskv_putpacked_batch_size_"+pid+"_0","r")
-		sdskv_putpacked_latency = open(data_directory + "sdskv_putpacked_latency_"+pid+"_0","r")
+		sdskv_putpacked_size = open(data_directory + "/sdskv_putpacked_data_size_"+pid+"_4","r")
+		sdskv_putpacked_batch_size = open(data_directory + "/sdskv_putpacked_batch_size_"+pid+"_4","r")
+		sdskv_putpacked_latency = open(data_directory + "/sdskv_putpacked_latency_"+pid+"_4","r")
 		contents1 = sdskv_putpacked_size.readlines()
 		contents2 = sdskv_putpacked_latency.readlines()
 		contents3 = sdskv_putpacked_batch_size.readlines()
@@ -69,5 +77,5 @@ def linear_regr_model():
 			raw_batch_sizes.append(float(batch_size))
 			raw_latencies.append(float(latency)*1000000.0)
 
-	regr = np.poly1d(np.polyfit(raw_batch_sizes, raw_latencies, 2))
+	regr = np.poly1d(np.polyfit(raw_sizes, raw_latencies, 2))
 	return regr

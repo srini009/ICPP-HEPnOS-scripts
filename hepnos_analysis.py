@@ -12,10 +12,10 @@ threaddict = dict()
 
 pid = str(sys.argv[1])
 
-sdskv_putpacked_size = open("sdskv_putpacked_data_size_"+pid+"_4","r")
-sdskv_putpacked_batch_size = open("sdskv_putpacked_batch_size_"+pid+"_4","r")
-sdskv_putpacked_latency = open("sdskv_putpacked_latency_"+pid+"_4","r")
-sdskv_putpacked_num_entrants = open("sdskv_putpacked_num_entrants_"+pid+"_4","r")
+sdskv_putpacked_size = open("sdskv_putpacked_data_size_"+pid+"_0","r")
+sdskv_putpacked_batch_size = open("sdskv_putpacked_batch_size_"+pid+"_0","r")
+sdskv_putpacked_latency = open("sdskv_putpacked_latency_"+pid+"_0","r")
+sdskv_putpacked_num_entrants = open("sdskv_putpacked_num_entrants_"+pid+"_0","r")
 
 contents3 = sdskv_putpacked_size.readlines()
 contents4 = sdskv_putpacked_latency.readlines()
